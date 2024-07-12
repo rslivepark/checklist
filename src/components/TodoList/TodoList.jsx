@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AddTodo from '../AddTodo/AddTodo';
 import Todo from '../Todo/Todo';
 
-export default function TodoList() {
+export default function TodoList({ filter }) {
   const [todos, setTodos] = useState([
     { id: '123', text: 'shopping', status: 'active' },
     { id: '124', text: 'playing games', status: 'active' },
@@ -19,10 +19,12 @@ export default function TodoList() {
     setTodos(todos.filter((t) => t.id !== deleted.id));
   };
 
+  const filtered = getFilterdItems(todos, filter);
+
   return (
     <section>
       <ul>
-        {todos.map((item) => (
+        {filtered.map((item) => (
           <Todo
             key={item.id}
             todo={item}
@@ -34,6 +36,13 @@ export default function TodoList() {
       <AddTodo onAdd={handleAdd} />
     </section>
   );
+}
+
+function getFilterdItems(todos, filter) {
+  if (filter === 'all') {
+    return todos;
+  }
+  return todos.filter((todo) => todo.status === filter);
 }
 
 // todo list 보여주는 기능만 있음
