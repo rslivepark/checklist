@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddTodo from '../AddTodo/AddTodo';
 import Todo from '../Todo/Todo';
 import styles from './TodoList.module.css';
 
 export default function TodoList({ filter }) {
-  const [todos, setTodos] = useState([
-    { id: '123', text: 'shopping', status: 'active' },
-    { id: '124', text: 'playing games', status: 'active' },
-  ]);
+  const [todos, setTodos] = useState(() => readTodosFromLocalStorage());
 
   const handleAdd = (todo) => {
     setTodos([...todos, todo]);
@@ -19,6 +16,10 @@ export default function TodoList({ filter }) {
   const handleDelete = (deleted) => {
     setTodos(todos.filter((t) => t.id !== deleted.id));
   };
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   const filtered = getFilterdItems(todos, filter);
 
@@ -44,6 +45,12 @@ function getFilterdItems(todos, filter) {
     return todos;
   }
   return todos.filter((todo) => todo.status === filter);
+}
+
+function readTodosFromLocalStorage() {
+  console.log('readTodosFromLocalStorage');
+  const todos = localStorage.getItem('todos');
+  return todos ? JSON.parse(todos) : [];
 }
 
 // todo list 보여주는 기능만 있음
